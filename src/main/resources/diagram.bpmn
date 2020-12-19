@@ -10,24 +10,24 @@
       <bpmn:outgoing>Flow_0pdougq</bpmn:outgoing>
       <bpmn:outgoing>Flow_1rz6273</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:taskDetail id="Activity_validateTravelRequest" name="Validate travel request">
+    <bpmn:task id="Activity_validateTravelRequest" name="Validate travel request">
       <bpmn:incoming>Flow_1rz6273</bpmn:incoming>
       <bpmn:outgoing>Flow_1yj15p5</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:exclusiveGateway id="Gateway_travelRequestStatus" name="Travel request status">
       <bpmn:incoming>Flow_1yj15p5</bpmn:incoming>
       <bpmn:outgoing>Flow_19gzk23</bpmn:outgoing>
       <bpmn:outgoing>Flow_1ac3j2a</bpmn:outgoing>
       <bpmn:outgoing>Flow_08jvlgt</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:taskDetail id="Activity_notifyEmployeeOfApproval" name="Notify employee of approval">
+    <bpmn:task id="Activity_notifyEmployeeOfApproval" name="Notify employee of approval">
       <bpmn:incoming>Flow_08jvlgt</bpmn:incoming>
       <bpmn:outgoing>Flow_086tyk4</bpmn:outgoing>
-    </bpmn:taskDetail>
-    <bpmn:taskDetail id="Activity_notifyEmployeeOfRejection" name="Notify employee of rejection">
+    </bpmn:task>
+    <bpmn:task id="Activity_notifyEmployeeOfRejection" name="Notify employee of rejection">
       <bpmn:incoming>Flow_1ac3j2a</bpmn:incoming>
       <bpmn:outgoing>Flow_1ptrpnz</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1ndmy94" sourceRef="StartEvent_travelRequestSubmitted" targetRef="Gateway_travelAdvanceUnderLimit" />
     <bpmn:sequenceFlow id="Flow_0pdougq" name="no" sourceRef="Gateway_travelAdvanceUnderLimit" targetRef="Activity_modifyTravelRequest">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${travelAdvanceUnderLimit == "no"}</bpmn:conditionExpression>
@@ -51,15 +51,15 @@
       <bpmn:outgoing>Flow_04vx04j</bpmn:outgoing>
       <bpmn:outgoing>Flow_17gky3a</bpmn:outgoing>
     </bpmn:parallelGateway>
-    <bpmn:taskDetail id="Activity_bookTicketsAndHotel" name="Book tickets and hotel">
+    <bpmn:task id="Activity_bookTicketsAndHotel" name="Book tickets and hotel">
       <bpmn:incoming>Flow_04vx04j</bpmn:incoming>
       <bpmn:outgoing>Flow_0eze6z0</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_04vx04j" sourceRef="Gateway_fork" targetRef="Activity_bookTicketsAndHotel" />
-    <bpmn:taskDetail id="Activity_arrangeTravelAdvance" name="Arrange travel advance">
+    <bpmn:task id="Activity_arrangeTravelAdvance" name="Arrange travel advance">
       <bpmn:incoming>Flow_17gky3a</bpmn:incoming>
       <bpmn:outgoing>Flow_144b0k6</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_17gky3a" sourceRef="Gateway_fork" targetRef="Activity_arrangeTravelAdvance" />
     <bpmn:sequenceFlow id="Flow_0eze6z0" sourceRef="Activity_bookTicketsAndHotel" targetRef="Gateway_join" />
     <bpmn:parallelGateway id="Gateway_join">
@@ -68,16 +68,16 @@
       <bpmn:outgoing>Flow_0acyn4e</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_144b0k6" sourceRef="Activity_arrangeTravelAdvance" targetRef="Gateway_join" />
-    <bpmn:taskDetail id="Activity_validateBooking" name="Validate booking">
+    <bpmn:task id="Activity_validateBooking" name="Validate booking">
       <bpmn:incoming>Flow_0acyn4e</bpmn:incoming>
       <bpmn:outgoing>Flow_0q7y6l3</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0acyn4e" sourceRef="Gateway_join" targetRef="Activity_validateBooking" />
-    <bpmn:taskDetail id="Activity_prepareBookingInformation" name="Prepare booking information">
+    <bpmn:task id="Activity_prepareBookingInformation" name="Prepare booking information">
       <bpmn:incoming>Flow_086tyk4</bpmn:incoming>
       <bpmn:incoming>Flow_0br4da6</bpmn:incoming>
       <bpmn:outgoing>Flow_1cg47j7</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_086tyk4" sourceRef="Activity_notifyEmployeeOfApproval" targetRef="Activity_prepareBookingInformation" />
     <bpmn:sequenceFlow id="Flow_1cg47j7" sourceRef="Activity_prepareBookingInformation" targetRef="Gateway_fork" />
     <bpmn:endEvent id="Event_requestRejected" name="Request&#10;rejected">
@@ -95,35 +95,35 @@
     <bpmn:sequenceFlow id="Flow_0br4da6" name="modify" sourceRef="Gateway_01ewo85" targetRef="Activity_prepareBookingInformation">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${bookingValidationResult == "modify"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:taskDetail id="Activity_payForTravel" name="Pay for travel">
+    <bpmn:task id="Activity_payForTravel" name="Pay for travel">
       <bpmn:incoming>Flow_0qqmzp3</bpmn:incoming>
       <bpmn:outgoing>Flow_0fk9p1j</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0qqmzp3" name="approved" sourceRef="Gateway_01ewo85" targetRef="Activity_payForTravel">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${bookingValidationResult == "approved"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_15t9qdx" name="rejected" sourceRef="Gateway_01ewo85" targetRef="Event_requestRejected">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${bookingValidationResult == "rejected"}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
-    <bpmn:taskDetail id="Activity_confirmBooking" name="Confirm booking">
+    <bpmn:task id="Activity_confirmBooking" name="Confirm booking">
       <bpmn:incoming>Flow_0fk9p1j</bpmn:incoming>
       <bpmn:outgoing>Flow_1wvmk79</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_0fk9p1j" sourceRef="Activity_payForTravel" targetRef="Activity_confirmBooking" />
-    <bpmn:taskDetail id="Activity_sendMessageToEmployee" name="Send message to employee">
+    <bpmn:task id="Activity_sendMessageToEmployee" name="Send message to employee">
       <bpmn:incoming>Flow_1wvmk79</bpmn:incoming>
       <bpmn:outgoing>Flow_1xd2zur</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1wvmk79" sourceRef="Activity_confirmBooking" targetRef="Activity_sendMessageToEmployee" />
     <bpmn:endEvent id="Event_requestCompleted" name="Request completed">
       <bpmn:incoming>Flow_1xd2zur</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1xd2zur" sourceRef="Activity_sendMessageToEmployee" targetRef="Event_requestCompleted" />
-    <bpmn:taskDetail id="Activity_modifyTravelRequest" name="Modify travel request">
+    <bpmn:task id="Activity_modifyTravelRequest" name="Modify travel request">
       <bpmn:incoming>Flow_19gzk23</bpmn:incoming>
       <bpmn:incoming>Flow_0pdougq</bpmn:incoming>
       <bpmn:outgoing>Flow_0ratqiz</bpmn:outgoing>
-    </bpmn:taskDetail>
+    </bpmn:task>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="travelRequest">
