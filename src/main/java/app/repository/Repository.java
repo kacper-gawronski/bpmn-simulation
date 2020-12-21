@@ -16,12 +16,21 @@ import java.util.Map;
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class Repository {
 
+    static String fileName;
     static Model model;
     static Process process;
     static Variables variables;
     static Map<String, Object> inputVariables;
     static List<TaskDetail> taskDetails;
     static SimulationActivities simulationActivities;
+
+    public static String getFileName() {
+        return fileName;
+    }
+
+    public static void setFileName(String fileName) {
+        Repository.fileName = fileName;
+    }
 
     public static Model getModel() {
         return model;

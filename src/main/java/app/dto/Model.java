@@ -12,5 +12,6 @@ import org.springframework.stereotype.Service;
 public class Model {
 
     String filePath;
+    String fileContent;
 
 }

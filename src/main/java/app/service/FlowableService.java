@@ -11,6 +11,7 @@ import lombok.experimental.FieldDefaults;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.repository.Deployment;
+import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class FlowableService {
 
     ProbabilityService probabilityService;
 
-    //    ProcessEngine processEngine;
+     ProcessEngine processEngine;
     RuntimeService runtimeService;
     RepositoryService repositoryService;
     TaskService taskService;
@@ -34,15 +35,47 @@ public class FlowableService {
 
 
     public void deployProcessDefinition() {
+
+//        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().active().list();
+//        System.out.println("\n" + processInstances.size() + "\n");
+//        for (ProcessInstance processInstance : processInstances) {
+//            System.out.println(processInstance.toString());
+////            runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "Cleaning up development environment");
+//        }
+
+        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
+        System.out.println("\n" + deployments.size() + "\n");
+        for (Deployment deployment : deployments) {
+            System.out.println(deployment.toString());
+//            repositoryService.deleteDeployment(deployment.getId());
+        }
+
         Model model = Repository.getModel();
-        System.out.println(model);
+//        System.out.println(model);
         String filePath = model.getFilePath().substring(model.getFilePath().lastIndexOf("/") + 1);
         System.out.println(filePath);
         Deployment deployment =
                 repositoryService
                         .createDeployment()
-                        .addClasspathResource(filePath)
+                        .addString(filePath, Repository.getModel().getFileContent())
+//                        .addClasspathResource(filePath)
                         .deploy();
+
+
+//        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
+//                .deploymentId(deployment.getId())
+//                .singleResult();
+//        System.out.println("Found process definition : " + processDefinition.getName());
+//        System.out.println("process definition key : " + processDefinition.getKey());
+//        System.out.println("process definition id : " + processDefinition.getId());
+//
+//
+//        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+//        for (ProcessDefinition procDef : processDefinitions             ) {
+//            System.out.println("Found process definition : " + procDef.getName());
+//            System.out.println("process definition key : " + procDef.getKey());
+//            System.out.println("process definition id : " + procDef.getId());
+//        }
 
     }
 
@@ -50,12 +83,15 @@ public class FlowableService {
     public void simulateProcessDefinition() {
         Map<String, Object> variables = probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities());
         Repository.setInputVariables(variables);
+//        repositoryService.activateProcessDefinitionById(Repository.getProcess().getProcessId());
+
+
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
         // TODO: create or update exit from infinite loops
-        /* Exit from ininite loop - calculate new probabilities */
+        /* Exit from infinite loop - calculate new variables */
         Set<String> taskNames = new HashSet<>();
         do {
             System.out.println(tasks);

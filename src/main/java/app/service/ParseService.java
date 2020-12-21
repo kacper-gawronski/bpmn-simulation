@@ -62,18 +62,20 @@ public class ParseService {
 
     //-----------------------------------------------
 
-    public String saveModelToFile(String model) {
-        String fileName = "src/main/resources/model.bpmn20.xml";
+    public String saveModelToFile(String file, String fileName) {
+//        String fileName = "src/main/resources/model.bpmn20.xml";
+
+        String filePath = "src/main/resources/" + fileName;
 
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
-            writer.write(model);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+            writer.write(file);
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return fileName;
+        return filePath;
     }
 
     public Process setProcessParameters(Model model) {

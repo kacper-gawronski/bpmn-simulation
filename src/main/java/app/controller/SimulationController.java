@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class SimulationController {
@@ -26,9 +26,15 @@ public class SimulationController {
 
     // -------------------------------------------------------------
 
-    @PostMapping(value = "/parse", consumes = {MediaType.APPLICATION_XML_VALUE})
+    @PostMapping(value = "/file-name", consumes = {MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<String> setFileName(@RequestBody String fileName) {
+        Repository.setFileName(fileName);
+        return ResponseEntity.ok().body("File name: " + fileName + " is set on the server");
+    }
+
+    @PostMapping(value = "/parse", consumes = {MediaType.TEXT_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
     public ResponseEntity<Map<String, Object>> parseModel(@RequestBody String file) {
-        Model model = new Model(parseService.saveModelToFile(file));
+        Model model = new Model(parseService.saveModelToFile(file, Repository.getFileName()), file);
 
         Process process = parseService.setProcessParameters(model);
         Variables variables = parseService.getVariables(model);
@@ -50,12 +56,12 @@ public class SimulationController {
     }
 
 
-    @PostMapping(value = "/set-variables")
-    public ResponseEntity<Variables> parseModel(@RequestBody Variables variables) {
-        System.out.println(variables);
-        Repository.setVariables(variables);
+    @PostMapping(value = "/set-variables", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<Variables> parseModel(@RequestBody Map<String, Map<Object, Integer>> variablesWithProbabilities) {
+        System.out.println(variablesWithProbabilities);
+        Repository.setVariables(new Variables(Repository.getVariables().getPossibleVariables(), variablesWithProbabilities));
 
-        return ResponseEntity.ok().body(variables);
+        return ResponseEntity.ok().body(Repository.getVariables());
     }
 
     @PostMapping(value = "/set-task-values")
@@ -69,7 +75,7 @@ public class SimulationController {
     @PostMapping("/deploy")
     public ResponseEntity<?> deployWorkflow() {
         flowableService.deployProcessDefinition();
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body("Process successfully deployed");
     }
 
     @PostMapping("/simulation")
@@ -78,6 +84,12 @@ public class SimulationController {
         return ResponseEntity.ok().body(Repository.getSimulationActivities());
     }
 
+    @PostMapping("/deploy-simulation")
+    public ResponseEntity<SimulationActivities> deployAndSimulateProcess() {
+        flowableService.deployProcessDefinition();
+        flowableService.simulateProcessDefinition();
+        return ResponseEntity.ok().body(Repository.getSimulationActivities());
+    }
 
     // -------------------------------------------------------------
 
