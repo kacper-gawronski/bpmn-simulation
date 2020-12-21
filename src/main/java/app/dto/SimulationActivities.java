@@ -15,6 +15,6 @@ public class SimulationActivities {
 
     List<SimulationActivity> simulationActivities;
     Integer totalDuration;
-    Integer totalCost;
+    Double totalCost;
 
 }

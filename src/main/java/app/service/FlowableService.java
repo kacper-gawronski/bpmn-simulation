@@ -26,8 +26,9 @@ import java.util.stream.Collectors;
 public class FlowableService {
 
     ProbabilityService probabilityService;
+    CostService costService;
 
-     ProcessEngine processEngine;
+    ProcessEngine processEngine;
     RuntimeService runtimeService;
     RepositoryService repositoryService;
     TaskService taskService;
@@ -88,6 +89,11 @@ public class FlowableService {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
+        for (Object v: variables.values()) {
+            System.out.println(v);
+            System.out.println(v.getClass());
+        }
+
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
         // TODO: create or update exit from infinite loops
@@ -96,6 +102,14 @@ public class FlowableService {
         do {
             System.out.println(tasks);
             for (Task task : tasks) {
+
+                System.out.println(processInstance.getProcessVariables().values());
+
+                for (Object v : processInstance.getProcessVariables().values()) {
+                    System.out.println(v);
+                    System.out.println(v.getClass());
+                }
+
                 if (taskNames.contains(task.getName())) {
                     taskService.complete(task.getId(), probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities()));
                 } else {
@@ -127,7 +141,7 @@ public class FlowableService {
 
         List<SimulationActivity> simulationActivities = new ArrayList<>();
         int sumDuration = 0;
-        int sumCost = 0;
+        double sumCost = 0;
         for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("userTask")).collect(Collectors.toList())) {
             int index = 0;
             for (TaskDetail taskDetail : Repository.getTaskDetails()) {
@@ -138,7 +152,7 @@ public class FlowableService {
             }
 
             int duration = Repository.getTaskDetails().get(index).getDuration();
-            int cost = Repository.getTaskDetails().get(index).getCost();
+            double cost = costService.calculateCost(Repository.getTaskDetails().get(index).getCost(), duration);
             SimulationActivity simulationActivity = new SimulationActivity(
                     activity.getActivityId(),
                     activity.getActivityName(),

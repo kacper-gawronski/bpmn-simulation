@@ -16,6 +16,6 @@ public class SimulationActivity {
     String name;
     String type;
     Integer duration;
-    Integer cost;
+    Double cost;
 
 }

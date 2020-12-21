@@ -28,8 +28,16 @@ public class ProbabilityService {
                 System.out.println(variablesWithProbabilities.get(name).values().toArray()[i]);
                 probabilityPercentage += (int) variablesWithProbabilities.get(name).values().toArray()[i];
                 if (randomPercentage <= probabilityPercentage) {
-                    System.out.println(variablesWithProbabilities.get(name).keySet().toArray()[i]);
-                    inputVariables.put(name, variablesWithProbabilities.get(name).keySet().toArray()[i]);
+                    Object value = variablesWithProbabilities.get(name).keySet().toArray()[i];
+                    System.out.println(value);
+                    System.out.println(value.getClass());
+
+                    // TODO: check this because this may cause errors (when string value is "true" or "false") - but for now is necessary
+                    if (value.equals("true")) {
+                        inputVariables.put(name, true);
+                    } else if (value.equals("false")) {
+                        inputVariables.put(name, false);
+                    } else inputVariables.put(name, value);
                     break;
                 }
 
