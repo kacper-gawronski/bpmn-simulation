@@ -23,6 +23,8 @@ public class Repository {
     static Map<String, Object> inputVariables;
     static List<TaskDetail> taskDetails;
     static SimulationActivities simulationActivities;
+    static int numberOfSimulations;
+    static List<SimulationActivities> allSimulations;
 
     public static String getFileName() {
         return fileName;
@@ -78,5 +80,21 @@ public class Repository {
 
     public static void setSimulationActivities(SimulationActivities simulationActivities) {
         Repository.simulationActivities = simulationActivities;
+    }
+
+    public static int getNumberOfSimulations() {
+        return numberOfSimulations;
+    }
+
+    public static void setNumberOfSimulations(int numberOfSimulations) {
+        Repository.numberOfSimulations = numberOfSimulations;
+    }
+
+    public static List<SimulationActivities> getAllSimulations() {
+        return allSimulations;
+    }
+
+    public static void setAllSimulations(List<SimulationActivities> allSimulations) {
+        Repository.allSimulations = allSimulations;
     }
 }

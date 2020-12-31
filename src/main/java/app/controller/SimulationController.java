@@ -55,49 +55,68 @@ public class SimulationController {
         return ResponseEntity.ok().body(modelProperties);
     }
 
+    @PostMapping(value = "/number-of-simulations")
+    public ResponseEntity<Integer> setNumberOfSimulations(@RequestBody Integer numberOfSimulations) {
+        System.out.println(numberOfSimulations);
+        Repository.setNumberOfSimulations(numberOfSimulations);
 
-    @PostMapping(value = "/set-variables", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
-    public ResponseEntity<Variables> parseModel(@RequestBody Map<String, Map<Object, Integer>> variablesWithProbabilities) {
+        return ResponseEntity.ok().body(Repository.getNumberOfSimulations());
+    }
+
+    @PostMapping(value = "/variables", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
+    public ResponseEntity<Variables> setVariables(@RequestBody Map<String, Map<Object, Integer>> variablesWithProbabilities) {
         System.out.println(variablesWithProbabilities);
         Repository.setVariables(new Variables(Repository.getVariables().getPossibleVariables(), variablesWithProbabilities));
 
         return ResponseEntity.ok().body(Repository.getVariables());
     }
 
-    @PostMapping(value = "/set-task-values")
-    public ResponseEntity<List<TaskDetail>> parseModel(@RequestBody List<TaskDetail> taskDetails) {
+    @PostMapping(value = "/tasks-values")
+    public ResponseEntity<List<TaskDetail>> setTasksValues(@RequestBody List<TaskDetail> taskDetails) {
         System.out.println(taskDetails);
         Repository.setTaskDetails(taskDetails);
 
         return ResponseEntity.ok().body(taskDetails);
     }
 
-    @PostMapping("/deploy")
-    public ResponseEntity<?> deployWorkflow() {
+
+    @GetMapping("/simulation")
+    public ResponseEntity<List<SimulationActivities>> deployAndSimulateProcess() {
+        flowableService.deployProcessDefinition();
+
+        Repository.setAllSimulations(new ArrayList<>());
+
+        int sumDuration = 0;
+        double sumCost = 0;
+        for (int i = 0; i < Repository.getNumberOfSimulations(); i++) {
+            SimulationActivities simulationResult = flowableService.simulateProcessDefinition();
+            sumDuration += simulationResult.getTotalDuration();
+            sumCost += simulationResult.getTotalCost();
+        }
+
+        System.out.println("Suma trwania wszystkich procesów wynosi: " + sumDuration);
+        System.out.println("Suma kosztów wykonania wszystkich procesów wynosi: " + sumCost);
+
+        return ResponseEntity.ok().body(Repository.getAllSimulations());
+    }
+
+    // --------------------------------------
+
+    /*
+
+    @GetMapping("/deploy")
+    public ResponseEntity<?> deployProcess() {
         flowableService.deployProcessDefinition();
         return ResponseEntity.ok().body("Process successfully deployed");
     }
 
-    @PostMapping("/simulation")
+    @GetMapping("/simulation")
     public ResponseEntity<SimulationActivities> simulateProcess() {
         flowableService.simulateProcessDefinition();
         return ResponseEntity.ok().body(Repository.getSimulationActivities());
     }
 
-    @PostMapping("/deploy-simulation")
-    public ResponseEntity<SimulationActivities> deployAndSimulateProcess() {
-        flowableService.deployProcessDefinition();
-        flowableService.simulateProcessDefinition();
-        return ResponseEntity.ok().body(Repository.getSimulationActivities());
-    }
-
-    // -------------------------------------------------------------
-
-
-    @GetMapping("/api")
-    public Collection<String> test() {
-        return List.of("answer", "from", "backend");
-    }
+     */
 
 
 }

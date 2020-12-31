@@ -11,7 +11,6 @@ import lombok.experimental.FieldDefaults;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,7 +80,7 @@ public class FlowableService {
     }
 
 
-    public void simulateProcessDefinition() {
+    public SimulationActivities simulateProcessDefinition() {
         Map<String, Object> variables = probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities());
         Repository.setInputVariables(variables);
 //        repositoryService.activateProcessDefinitionById(Repository.getProcess().getProcessId());
@@ -89,7 +88,7 @@ public class FlowableService {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
-        for (Object v: variables.values()) {
+        for (Object v : variables.values()) {
             System.out.println(v);
             System.out.println(v.getClass());
         }
@@ -167,13 +166,18 @@ public class FlowableService {
             System.out.println("TASK: " + activity.getActivityName() + " took " + duration + " minutes and cost " + cost + "$");
         }
 
-        Repository.setSimulationActivities(new SimulationActivities(simulationActivities, sumDuration, sumCost));
+
+        SimulationActivities simulationResult =  new SimulationActivities(simulationActivities, sumDuration, sumCost);
+        Repository.setSimulationActivities(simulationResult);
 
         for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("endEvent")).collect(Collectors.toList())) {
             System.out.println("END: " + activity.getActivityName());
         }
 
         System.out.println("All process took " + sumDuration + " minutes and cost " + sumCost + "$");
+
+        Repository.getAllSimulations().add(simulationResult);
+        return simulationResult;
 
     }
 
