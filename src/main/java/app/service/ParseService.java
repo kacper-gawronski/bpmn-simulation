@@ -39,7 +39,7 @@ public class ParseService {
             String variableName,
             String variableValue
     ) {
-        System.out.println(variableName + " : " + variableValue);
+//        System.out.println(variableName + " : " + variableValue);
         if (variables.containsKey(variableName)) {
             Set<Object> set = new HashSet<>();
             set.addAll(variables.get(variableName));

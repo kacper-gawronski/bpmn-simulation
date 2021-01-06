@@ -45,7 +45,7 @@ public class SimulationController {
         Repository.setVariables(variables);
         Repository.setTaskDetails(taskDetails);
 
-        System.out.println(Repository.getProcess());
+//        System.out.println(Repository.getProcess());
 
         Map<String, Object> modelProperties = new HashMap<>();
         modelProperties.put("process", process);
@@ -57,7 +57,7 @@ public class SimulationController {
 
     @PostMapping(value = "/number-of-simulations")
     public ResponseEntity<Integer> setNumberOfSimulations(@RequestBody Integer numberOfSimulations) {
-        System.out.println(numberOfSimulations);
+//        System.out.println(numberOfSimulations);
         Repository.setNumberOfSimulations(numberOfSimulations);
 
         return ResponseEntity.ok().body(Repository.getNumberOfSimulations());
@@ -65,7 +65,7 @@ public class SimulationController {
 
     @PostMapping(value = "/variables", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.TEXT_PLAIN_VALUE})
     public ResponseEntity<Variables> setVariables(@RequestBody Map<String, Map<Object, Integer>> variablesWithProbabilities) {
-        System.out.println(variablesWithProbabilities);
+//        System.out.println(variablesWithProbabilities);
         Repository.setVariables(new Variables(Repository.getVariables().getPossibleVariables(), variablesWithProbabilities));
 
         return ResponseEntity.ok().body(Repository.getVariables());
@@ -73,7 +73,7 @@ public class SimulationController {
 
     @PostMapping(value = "/tasks-values")
     public ResponseEntity<List<TaskDetail>> setTasksValues(@RequestBody List<TaskDetail> taskDetails) {
-        System.out.println(taskDetails);
+//        System.out.println(taskDetails);
         Repository.setTaskDetails(taskDetails);
 
         return ResponseEntity.ok().body(taskDetails);
@@ -97,8 +97,8 @@ public class SimulationController {
         Repository.setSumOfDurations(sumDuration);
         Repository.setSumOfCosts(sumCost);
 
-        System.out.println("Suma trwania wszystkich procesów wynosi: " + sumDuration);
-        System.out.println("Suma kosztów wykonania wszystkich procesów wynosi: " + sumCost);
+//        System.out.println("Suma trwania wszystkich procesów wynosi: " + sumDuration);
+//        System.out.println("Suma kosztów wykonania wszystkich procesów wynosi: " + sumCost);
 
         Map<String, Object> result = new HashMap<>();
 

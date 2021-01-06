@@ -36,47 +36,15 @@ public class FlowableService {
 
     public void deployProcessDefinition() {
 
-//        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().active().list();
-//        System.out.println("\n" + processInstances.size() + "\n");
-//        for (ProcessInstance processInstance : processInstances) {
-//            System.out.println(processInstance.toString());
-////            runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "Cleaning up development environment");
-//        }
-
-        List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
-        System.out.println("\n" + deployments.size() + "\n");
-        for (Deployment deployment : deployments) {
-            System.out.println(deployment.toString());
-//            repositoryService.deleteDeployment(deployment.getId());
-        }
-
         Model model = Repository.getModel();
-//        System.out.println(model);
         String filePath = model.getFilePath().substring(model.getFilePath().lastIndexOf("/") + 1);
-        System.out.println(filePath);
+//        System.out.println(filePath);
         Deployment deployment =
                 repositoryService
                         .createDeployment()
                         .addString(filePath, Repository.getModel().getFileContent())
 //                        .addClasspathResource(filePath)
                         .deploy();
-
-
-//        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-//                .deploymentId(deployment.getId())
-//                .singleResult();
-//        System.out.println("Found process definition : " + processDefinition.getName());
-//        System.out.println("process definition key : " + processDefinition.getKey());
-//        System.out.println("process definition id : " + processDefinition.getId());
-//
-//
-//        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
-//        for (ProcessDefinition procDef : processDefinitions             ) {
-//            System.out.println("Found process definition : " + procDef.getName());
-//            System.out.println("process definition key : " + procDef.getKey());
-//            System.out.println("process definition id : " + procDef.getId());
-//        }
-
     }
 
 
@@ -88,10 +56,10 @@ public class FlowableService {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
-        for (Object v : variables.values()) {
-            System.out.println(v);
-            System.out.println(v.getClass());
-        }
+//        for (Object v : variables.values()) {
+//            System.out.println(v);
+//            System.out.println(v.getClass());
+//        }
 
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
@@ -99,15 +67,15 @@ public class FlowableService {
         /* Exit from infinite loop - calculate new variables */
         Set<String> taskNames = new HashSet<>();
         do {
-            System.out.println(tasks);
+//            System.out.println(tasks);
             for (Task task : tasks) {
 
-                System.out.println(processInstance.getProcessVariables().values());
+//                System.out.println(processInstance.getProcessVariables().values());
 
-                for (Object v : processInstance.getProcessVariables().values()) {
-                    System.out.println(v);
-                    System.out.println(v.getClass());
-                }
+//                for (Object v : processInstance.getProcessVariables().values()) {
+//                    System.out.println(v);
+//                    System.out.println(v.getClass());
+//                }
 
                 if (taskNames.contains(task.getName())) {
                     taskService.complete(task.getId(), probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities()));
@@ -130,12 +98,12 @@ public class FlowableService {
                         .list();
 
         for (HistoricActivityInstance activity : activities) {
-            System.out.println(
-                    "ID: " + activity.getActivityId() + "\n" +
-                            "Type: " + activity.getActivityType() + "\n" +
-                            "Name: " + activity.getActivityName() + "\n" +
-                            "Time: " + activity.getDurationInMillis() + " milliseconds \n"
-            );
+//            System.out.println(
+//                    "ID: " + activity.getActivityId() + "\n" +
+//                            "Type: " + activity.getActivityType() + "\n" +
+//                            "Name: " + activity.getActivityName() + "\n" +
+//                            "Time: " + activity.getDurationInMillis() + " milliseconds \n"
+//            );
         }
 
         List<SimulationActivity> simulationActivities = new ArrayList<>();
@@ -163,7 +131,7 @@ public class FlowableService {
 
             sumDuration += duration;
             sumCost += cost;
-            System.out.println("TASK: " + activity.getActivityName() + " took " + duration + " minutes and cost " + cost + "$");
+//            System.out.println("TASK: " + activity.getActivityName() + " took " + duration + " minutes and cost " + cost + "$");
         }
 
 
@@ -171,10 +139,10 @@ public class FlowableService {
         Repository.setSimulationActivities(simulationResult);
 
         for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("endEvent")).collect(Collectors.toList())) {
-            System.out.println("END: " + activity.getActivityName());
+//            System.out.println("END: " + activity.getActivityName());
         }
 
-        System.out.println("All process took " + sumDuration + " minutes and cost " + sumCost + "$");
+//        System.out.println("All process took " + sumDuration + " minutes and cost " + sumCost + "$");
 
         Repository.getAllSimulations().add(simulationResult);
         return simulationResult;
