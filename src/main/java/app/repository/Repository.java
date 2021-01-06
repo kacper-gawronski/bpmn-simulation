@@ -25,6 +25,8 @@ public class Repository {
     static SimulationActivities simulationActivities;
     static int numberOfSimulations;
     static List<SimulationActivities> allSimulations;
+    static int sumOfDurations;
+    static double sumOfCosts;
 
     public static String getFileName() {
         return fileName;
@@ -96,5 +98,21 @@ public class Repository {
 
     public static void setAllSimulations(List<SimulationActivities> allSimulations) {
         Repository.allSimulations = allSimulations;
+    }
+
+    public static int getSumOfDurations() {
+        return sumOfDurations;
+    }
+
+    public static void setSumOfDurations(int sumOfDurations) {
+        Repository.sumOfDurations = sumOfDurations;
+    }
+
+    public static double getSumOfCosts() {
+        return sumOfCosts;
+    }
+
+    public static void setSumOfCosts(double sumOfCosts) {
+        Repository.sumOfCosts = sumOfCosts;
     }
 }

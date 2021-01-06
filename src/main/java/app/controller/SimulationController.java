@@ -81,7 +81,7 @@ public class SimulationController {
 
 
     @GetMapping("/simulation")
-    public ResponseEntity<List<SimulationActivities>> deployAndSimulateProcess() {
+    public ResponseEntity<Map<String, Object>> deployAndSimulateProcess() {
         flowableService.deployProcessDefinition();
 
         Repository.setAllSimulations(new ArrayList<>());
@@ -94,29 +94,19 @@ public class SimulationController {
             sumCost += simulationResult.getTotalCost();
         }
 
+        Repository.setSumOfDurations(sumDuration);
+        Repository.setSumOfCosts(sumCost);
+
         System.out.println("Suma trwania wszystkich procesów wynosi: " + sumDuration);
         System.out.println("Suma kosztów wykonania wszystkich procesów wynosi: " + sumCost);
 
-        return ResponseEntity.ok().body(Repository.getAllSimulations());
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("processInstances", Repository.getAllSimulations());
+        result.put("sumOfDurations", Repository.getSumOfDurations());
+        result.put("sumOfCosts", Repository.getSumOfCosts());
+
+        return ResponseEntity.ok().body(result);
     }
-
-    // --------------------------------------
-
-    /*
-
-    @GetMapping("/deploy")
-    public ResponseEntity<?> deployProcess() {
-        flowableService.deployProcessDefinition();
-        return ResponseEntity.ok().body("Process successfully deployed");
-    }
-
-    @GetMapping("/simulation")
-    public ResponseEntity<SimulationActivities> simulateProcess() {
-        flowableService.simulateProcessDefinition();
-        return ResponseEntity.ok().body(Repository.getSimulationActivities());
-    }
-
-     */
-
 
 }
