@@ -1,4 +1,4 @@
-# bpmn-simulation
+# bpmn-simulation-server
 Application server for business process simulation in BPMN notation
 
 ## Requirements
