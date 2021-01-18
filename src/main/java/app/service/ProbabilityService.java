@@ -32,7 +32,7 @@ public class ProbabilityService {
 //                    System.out.println(value);
 //                    System.out.println(value.getClass());
 
-                    // TODO: check this because this may cause errors (when string value is "true" or "false") - but for now is necessary
+                    // TODO: check this because this may cause errors (when string value is "true" or "false") - but for now is unnecessary
                     if (value.equals("true")) {
                         inputVariables.put(name, true);
                     } else if (value.equals("false")) {

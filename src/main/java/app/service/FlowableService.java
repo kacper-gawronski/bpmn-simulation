@@ -51,8 +51,6 @@ public class FlowableService {
     public SimulationActivities simulateProcessDefinition() {
         Map<String, Object> variables = probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities());
         Repository.setInputVariables(variables);
-//        repositoryService.activateProcessDefinitionById(Repository.getProcess().getProcessId());
-
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
@@ -97,14 +95,14 @@ public class FlowableService {
                         .asc()
                         .list();
 
-        for (HistoricActivityInstance activity : activities) {
+//        for (HistoricActivityInstance activity : activities) {
 //            System.out.println(
 //                    "ID: " + activity.getActivityId() + "\n" +
 //                            "Type: " + activity.getActivityType() + "\n" +
 //                            "Name: " + activity.getActivityName() + "\n" +
 //                            "Time: " + activity.getDurationInMillis() + " milliseconds \n"
 //            );
-        }
+//        }
 
         List<SimulationActivity> simulationActivities = new ArrayList<>();
         int sumDuration = 0;
@@ -138,9 +136,9 @@ public class FlowableService {
         SimulationActivities simulationResult =  new SimulationActivities(simulationActivities, sumDuration, sumCost);
         Repository.setSimulationActivities(simulationResult);
 
-        for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("endEvent")).collect(Collectors.toList())) {
+//        for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("endEvent")).collect(Collectors.toList())) {
 //            System.out.println("END: " + activity.getActivityName());
-        }
+//        }
 
 //        System.out.println("All process took " + sumDuration + " minutes and cost " + sumCost + "$");
 
