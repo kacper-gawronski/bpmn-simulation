@@ -39,7 +39,6 @@ public class ParseService {
             String variableName,
             String variableValue
     ) {
-//        System.out.println(variableName + " : " + variableValue);
         if (variables.containsKey(variableName)) {
             Set<Object> set = new HashSet<>();
             set.addAll(variables.get(variableName));
@@ -63,10 +62,7 @@ public class ParseService {
     //-----------------------------------------------
 
     public String saveModelToFile(String file, String fileName) {
-//        String fileName = "src/main/resources/model.bpmn20.xml";
-
         String filePath = "src/main/resources/" + fileName;
-
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
             writer.write(file);
@@ -92,9 +88,7 @@ public class ParseService {
                 Node node = nodeList.item(i);
                 processId = node.getAttributes().getNamedItem("id").getNodeValue();
                 processName = node.getAttributes().getNamedItem("name").getNodeValue();
-                if (node.getAttributes().getNamedItem("isExecutable").getNodeValue().equals("true"))
-                    isExecutable = true;
-                else isExecutable = false;
+                isExecutable = node.getAttributes().getNamedItem("isExecutable").getNodeValue().equals("true");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,19 +119,17 @@ public class ParseService {
                         tagContent = process.getElementsByTagName(tagName).item(j).getTextContent();
                         tagContent = tagContent.substring(tagContent.indexOf('{') + 1, tagContent.indexOf('}'));
 
-                        // TODO: Check this out! Maybe for example empty string or string which is space character should not have this implementation
+                        // TODO: Check that empty string or string which is space character should not have other implementation
                         tagContent = tagContent.replaceAll(" ", "");
 
                         // boolean value with NOT operator
                         if (tagContent.startsWith("!")) {
                             variableName = tagContent.substring(1);
-//                            System.out.println(variableName + " : " + true + ", " + false);
                             variables.put(variableName, Set.of(Boolean.TRUE, Boolean.FALSE));
                         }
                         // boolean value without any operator
                         else if (!tagContent.contains("=")) {
                             variableName = tagContent;
-//                            System.out.println(variableName + " : " + true + ", " + false);
                             variables.put(variableName, Set.of(Boolean.TRUE, Boolean.FALSE));
                         }
                         // string value with != operator
@@ -155,13 +147,11 @@ public class ParseService {
                         // boolean value equal to true or false with != operator
                         else if ((tagContent.contains("true") || tagContent.contains("false")) && tagContent.contains("!=")) {
                             variableName = tagContent.substring(0, tagContent.indexOf("!="));
-//                            System.out.println(variableName + " : " + true + ", " + false);
                             variables.put(variableName, Set.of(Boolean.TRUE, Boolean.FALSE));
                         }
                         // boolean value equal to true or false
                         else if (tagContent.contains("true") || tagContent.contains("false")) {
                             variableName = tagContent.substring(0, tagContent.indexOf("="));
-//                            System.out.println(variableName + " : " + true + ", " + false);
                             variables.put(variableName, Set.of(Boolean.TRUE, Boolean.FALSE));
                         }
                         // integer value
@@ -184,7 +174,6 @@ public class ParseService {
                     return new Variables(variables, variablesWithProbabilities);
                 }
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -222,7 +211,6 @@ public class ParseService {
                     }
                 }
             }
-
             return taskDetails;
 
         } catch (Exception e) {

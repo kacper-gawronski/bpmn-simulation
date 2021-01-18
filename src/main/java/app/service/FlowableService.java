@@ -8,7 +8,10 @@ import app.repository.Repository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.flowable.engine.*;
+import org.flowable.engine.HistoryService;
+import org.flowable.engine.RepositoryService;
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -27,7 +30,6 @@ public class FlowableService {
     ProbabilityService probabilityService;
     CostService costService;
 
-    ProcessEngine processEngine;
     RuntimeService runtimeService;
     RepositoryService repositoryService;
     TaskService taskService;
@@ -38,7 +40,6 @@ public class FlowableService {
 
         Model model = Repository.getModel();
         String filePath = model.getFilePath().substring(model.getFilePath().lastIndexOf("/") + 1);
-//        System.out.println(filePath);
         Deployment deployment =
                 repositoryService
                         .createDeployment()
@@ -54,27 +55,12 @@ public class FlowableService {
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(Repository.getProcess().getProcessId(), variables);
 
-//        for (Object v : variables.values()) {
-//            System.out.println(v);
-//            System.out.println(v.getClass());
-//        }
-
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
 
-        // TODO: create or update exit from infinite loops
         /* Exit from infinite loop - calculate new variables */
         Set<String> taskNames = new HashSet<>();
         do {
-//            System.out.println(tasks);
             for (Task task : tasks) {
-
-//                System.out.println(processInstance.getProcessVariables().values());
-
-//                for (Object v : processInstance.getProcessVariables().values()) {
-//                    System.out.println(v);
-//                    System.out.println(v.getClass());
-//                }
-
                 if (taskNames.contains(task.getName())) {
                     taskService.complete(task.getId(), probabilityService.chooseVariableValues(Repository.getVariables().getVariablesWithProbabilities()));
                 } else {
@@ -94,15 +80,6 @@ public class FlowableService {
                         .orderByHistoricActivityInstanceEndTime()
                         .asc()
                         .list();
-
-//        for (HistoricActivityInstance activity : activities) {
-//            System.out.println(
-//                    "ID: " + activity.getActivityId() + "\n" +
-//                            "Type: " + activity.getActivityType() + "\n" +
-//                            "Name: " + activity.getActivityName() + "\n" +
-//                            "Time: " + activity.getDurationInMillis() + " milliseconds \n"
-//            );
-//        }
 
         List<SimulationActivity> simulationActivities = new ArrayList<>();
         int sumDuration = 0;
@@ -129,22 +106,14 @@ public class FlowableService {
 
             sumDuration += duration;
             sumCost += cost;
-//            System.out.println("TASK: " + activity.getActivityName() + " took " + duration + " minutes and cost " + cost + "$");
         }
 
 
-        SimulationActivities simulationResult =  new SimulationActivities(simulationActivities, sumDuration, sumCost);
+        SimulationActivities simulationResult = new SimulationActivities(simulationActivities, sumDuration, sumCost);
         Repository.setSimulationActivities(simulationResult);
-
-//        for (HistoricActivityInstance activity : activities.stream().filter(x -> x.getActivityType().equals("endEvent")).collect(Collectors.toList())) {
-//            System.out.println("END: " + activity.getActivityName());
-//        }
-
-//        System.out.println("All process took " + sumDuration + " minutes and cost " + sumCost + "$");
 
         Repository.getAllSimulations().add(simulationResult);
         return simulationResult;
-
     }
 
 }

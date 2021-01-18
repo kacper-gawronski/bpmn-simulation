@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class CostService {
 
     public double calculateCost(int cost, int durationInMinutes) {
-        return ( (double) (cost * durationInMinutes) ) / 60;
+        return ((double) (cost * durationInMinutes)) / 60;
     }
 
 }
