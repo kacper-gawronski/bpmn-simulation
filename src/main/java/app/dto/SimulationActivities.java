@@ -14,6 +14,7 @@ import java.util.List;
 public class SimulationActivities {
 
     List<SimulationActivity> simulationActivities;
+    String endEventName;
     Integer totalDuration;
     Double totalCost;
 

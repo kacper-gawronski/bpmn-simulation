@@ -5,6 +5,7 @@ import app.dto.*;
 import app.repository.Repository;
 import app.service.FlowableService;
 import app.service.ParseService;
+import javafx.util.Pair;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -56,6 +57,12 @@ public class SimulationController {
         return ResponseEntity.ok().body(modelProperties);
     }
 
+//    @GetMapping(value = "/deploy")
+//    public ResponseEntity<Pair<String, String>> deployProcessDefinition() {
+//        String deploymentName = flowableService.deployProcessDefinition();
+//        return ResponseEntity.ok().body(new Pair<>("deploymentName", deploymentName));
+//    }
+
     @PostMapping(value = "/number-of-simulations")
     public ResponseEntity<Integer> setNumberOfSimulations(@RequestBody Integer numberOfSimulations) {
         Repository.setNumberOfSimulations(numberOfSimulations);
@@ -73,7 +80,6 @@ public class SimulationController {
         Repository.setTaskDetails(taskDetails);
         return ResponseEntity.ok().body(taskDetails);
     }
-
 
     @GetMapping("/simulation")
     public ResponseEntity<Map<String, Object>> deployAndSimulateProcess() {

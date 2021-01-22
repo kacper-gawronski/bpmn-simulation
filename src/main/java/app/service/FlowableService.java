@@ -36,7 +36,7 @@ public class FlowableService {
     HistoryService historyService;
 
 
-    public void deployProcessDefinition() {
+    public String deployProcessDefinition() {
 
         Model model = Repository.getModel();
         String filePath = model.getFilePath().substring(model.getFilePath().lastIndexOf("/") + 1);
@@ -46,6 +46,8 @@ public class FlowableService {
                         .addString(filePath, Repository.getModel().getFileContent())
 //                        .addClasspathResource(filePath)
                         .deploy();
+
+        return deployment.getName();
     }
 
 
@@ -81,6 +83,16 @@ public class FlowableService {
                         .asc()
                         .list();
 
+        /*
+        for (HistoricActivityInstance activity : activities) {
+            System.out.println(
+                    "ID: " + activity.getActivityId() + "\n" +
+                            "Type: " + activity.getActivityType() + "\n" +
+                            "Name: " + activity.getActivityName() + "\n");
+        }
+         */
+
+
         List<SimulationActivity> simulationActivities = new ArrayList<>();
         int sumDuration = 0;
         double sumCost = 0;
@@ -108,8 +120,10 @@ public class FlowableService {
             sumCost += cost;
         }
 
+        HistoricActivityInstance endEvent = activities.stream().filter(activity -> activity.getActivityType().equals("endEvent")).findAny().orElse(null);
+//        System.out.println("END EVENT: " + endEvent.getActivityName());
 
-        SimulationActivities simulationResult = new SimulationActivities(simulationActivities, sumDuration, sumCost);
+        SimulationActivities simulationResult = new SimulationActivities(simulationActivities, endEvent.getActivityName(), sumDuration, sumCost);
         Repository.setSimulationActivities(simulationResult);
 
         Repository.getAllSimulations().add(simulationResult);
